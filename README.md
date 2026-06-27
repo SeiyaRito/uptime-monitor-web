@@ -1,16 +1,57 @@
-# React + Vite
+# Pegasus — Uptime Monitor
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Frontend de [Pegasus](https://app.rito.best), un sistema de monitoreo de uptime. Muestra el estado de tus servicios en tiempo real, historial de incidentes, analytics y una página de estado pública.
 
-Currently, two official plugins are available:
+**Demo en vivo:** [app.rito.best](https://app.rito.best)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** + **Vite 8**
+- **React Router 7** — navegación con Outlet pattern
+- **Axios** — cliente HTTP con interceptores de auth
+- **Recharts** — gráficos en la página de Analytics
+- **Inline styles** — sin Tailwind, valores de diseño exactos y consistentes
 
-## Expanding the Oxlint configuration
+## Páginas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+| Ruta | Descripción |
+|---|---|
+| `/` | Dashboard — estado general, sparklines, auto-refresh 30s |
+| `/monitors` | CRUD completo de monitores |
+| `/incidents` | Historial de incidentes con duración |
+| `/analytics` | Gráfico de uptime % por monitor (Recharts) |
+| `/notifications` | Configuración de alertas por email |
+| `/settings` | Configuración de cuenta |
+| `/status/:username` | Página pública de estado — sin login |
+
+## Características
+
+- Autenticación completa con tokens Sanctum (registro, login, logout)
+- Auto-refresh cada 30 segundos en Dashboard, Monitors e Incidents
+- Modales con animaciones CSS (`cubic-bezier` spring)
+- Status page pública que no expone las URLs monitoreadas
+- Diseño dark mode con sistema de colores consistente
+
+## Correr localmente
+
+```bash
+git clone https://github.com/SeiyaRito/uptime-monitor-web.git
+cd uptime-monitor-web
+npm install
+cp .env.example .env
+npm run dev
+```
+
+Requiere el backend corriendo en `http://localhost:8000`. Ver [uptime-monitor-api](https://github.com/SeiyaRito/uptime-monitor-api).
+
+## Variables de entorno
+
+```env
+VITE_API_URL=https://uptime-monitor-api-production.up.railway.app
+```
+
+---
+
+**Backend:** [github.com/SeiyaRito/uptime-monitor-api](https://github.com/SeiyaRito/uptime-monitor-api)

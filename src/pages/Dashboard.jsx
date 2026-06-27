@@ -136,7 +136,7 @@ export default function Dashboard() {
       <div className="pw-scroll" style={{ flex: 1, overflowY: 'auto' }}>
         <div style={{ maxWidth: 1340, margin: '0 auto', padding: '24px 26px 48px' }}>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+          <div className="pw-metric-grid">
             <MetricCard label="Monitores activos" value={activeMonitors.length} sub={`${monitors.length} total`} />
             <MetricCard label="En línea ahora" value={upCount} suffix={`/ ${monitors.length}`} sub={downCount > 0 ? `${downCount} caídos` : 'Todos en línea'} subColor={downCount > 0 ? '#E24B4A' : '#1D9E75'} />
             <MetricCard label="Tiempo de respuesta prom." value={avgResponse ?? '—'} suffix={avgResponse ? 'ms' : ''} sub="último chequeo" />
@@ -165,7 +165,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div style={{ background: '#141414', border: '0.5px solid #1e1e1e', borderRadius: 11, overflow: 'hidden' }}>
+          <div className="pw-table-scroll" style={{ borderRadius: 11 }}>
+          <div style={{ background: '#141414', border: '0.5px solid #1e1e1e', borderRadius: 11, overflow: 'hidden', minWidth: 520 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 124px 96px 84px 72px', alignItems: 'center', gap: 16, padding: '10px 18px', borderBottom: '0.5px solid #1e1e1e' }}>
               {['Monitor', 'Estado', 'Últ. 24h', 'Respuesta', 'Uptime', ''].map((h, i) => (
                 <div key={i} style={{ fontSize: 10.5, fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#555', textAlign: i >= 3 && i < 5 ? 'right' : 'left' }}>{h}</div>
@@ -214,6 +215,7 @@ export default function Dashboard() {
                 </div>
               ))
             )}
+          </div>
           </div>
 
         </div>

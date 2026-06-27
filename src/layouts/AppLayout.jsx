@@ -1,4 +1,5 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ICONS = {
@@ -10,6 +11,7 @@ const ICONS = {
   bell: <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9z"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></>,
   settings: <><line x1="3" y1="7" x2="21" y2="7"/><circle cx="9" cy="7" r="2.4"/><line x1="3" y1="17" x2="21" y2="17"/><circle cx="15" cy="17" r="2.4"/></>,
   logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
+  menu: <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
 };
 
 function Icon({ name }) {
@@ -28,13 +30,14 @@ function SectionLabel({ children }) {
   );
 }
 
-function SidebarLink({ to, icon, children, badge, external }) {
+function SidebarLink({ to, icon, children, badge, external, onClick }) {
   if (external) {
     return (
       <a
         href={to}
         target="_blank"
         rel="noreferrer"
+        onClick={onClick}
         style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '7px 10px', borderRadius: 7, fontSize: 13.5, fontWeight: 450, color: '#8a8a8a', textDecoration: 'none', cursor: 'pointer' }}
       >
         <Icon name={icon} />
@@ -46,6 +49,7 @@ function SidebarLink({ to, icon, children, badge, external }) {
     <NavLink
       to={to}
       end={to === '/'}
+      onClick={onClick}
       style={({ isActive }) => ({
         display: 'flex', alignItems: 'center', gap: 11, padding: '7px 10px',
         borderRadius: 7, fontSize: 13.5, fontWeight: 450,
@@ -67,13 +71,28 @@ function SidebarLink({ to, icon, children, badge, external }) {
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
+  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const initials = user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  const closeNav = () => setSidebarOpen(false);
 
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100%', overflow: 'hidden', background: '#0a0a0a' }}>
-      <aside style={{ width: 220, flexShrink: 0, background: '#111111', borderRight: '0.5px solid #1e1e1e', display: 'flex', flexDirection: 'column', padding: '16px 12px' }}>
 
-        {/* Logo */}
+      {/* Mobile overlay */}
+      <div
+        className={`pw-overlay${sidebarOpen ? ' pw-open' : ''}`}
+        onClick={closeNav}
+      />
+
+      {/* Sidebar */}
+      <aside className={`pw-sidebar${sidebarOpen ? ' pw-open' : ''}`} style={{ width: 220, flexShrink: 0, background: '#111111', borderRight: '0.5px solid #1e1e1e', display: 'flex', flexDirection: 'column', padding: '16px 12px' }}>
+
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, padding: '18px 8px 20px', borderBottom: '0.5px solid #1e1e1e', marginBottom: 14 }}>
           <img src="/Pegasus.PNG" alt="Pegasus" style={{ width: 72, height: 72, borderRadius: 16, objectFit: 'contain', background: '#ffffff', padding: 6, boxShadow: '0 2px 12px rgba(0,0,0,0.4)' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -84,22 +103,21 @@ export default function AppLayout() {
 
         <SectionLabel>Monitoreo</SectionLabel>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <SidebarLink to="/" icon="dashboard">Dashboard</SidebarLink>
-          <SidebarLink to="/monitors" icon="monitors">Monitores</SidebarLink>
-          <SidebarLink to="/incidents" icon="incidents">Incidentes</SidebarLink>
-          <SidebarLink to="/analytics" icon="analytics">Analíticas</SidebarLink>
+          <SidebarLink to="/" icon="dashboard" onClick={closeNav}>Dashboard</SidebarLink>
+          <SidebarLink to="/monitors" icon="monitors" onClick={closeNav}>Monitores</SidebarLink>
+          <SidebarLink to="/incidents" icon="incidents" onClick={closeNav}>Incidentes</SidebarLink>
+          <SidebarLink to="/analytics" icon="analytics" onClick={closeNav}>Analíticas</SidebarLink>
         </nav>
 
         <SectionLabel>Espacio de trabajo</SectionLabel>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <SidebarLink to={`/status/${user?.username || ''}`} icon="status" external>Página de estado</SidebarLink>
-          <SidebarLink to="/notifications" icon="bell">Notificaciones</SidebarLink>
-          <SidebarLink to="/settings" icon="settings">Configuración</SidebarLink>
+          <SidebarLink to={`/status/${user?.username || ''}`} icon="status" external onClick={closeNav}>Página de estado</SidebarLink>
+          <SidebarLink to="/notifications" icon="bell" onClick={closeNav}>Notificaciones</SidebarLink>
+          <SidebarLink to="/settings" icon="settings" onClick={closeNav}>Configuración</SidebarLink>
         </nav>
 
         <div style={{ flex: 1 }} />
 
-        {/* User */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 8px', borderTop: '0.5px solid #1e1e1e', marginTop: 10 }}>
           <div style={{ width: 26, height: 26, flexShrink: 0, borderRadius: 7, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#9a9a9a' }}>{initials}</div>
           <div style={{ minWidth: 0, flex: 1 }}>
@@ -118,7 +136,23 @@ export default function AppLayout() {
         </div>
       </aside>
 
+      {/* Main content */}
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+
+        {/* Mobile top bar */}
+        <div className="pw-mobile-bar">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            style={{ background: 'none', border: 'none', color: '#9a9a9a', cursor: 'pointer', display: 'flex', padding: 6, borderRadius: 6 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              {ICONS.menu}
+            </svg>
+          </button>
+          <img src="/Pegasus.PNG" alt="Pegasus" style={{ width: 26, height: 26, borderRadius: 6, objectFit: 'contain', background: '#fff', padding: 3 }} />
+          <span style={{ fontSize: 14, fontWeight: 600, color: '#f2f2f2', letterSpacing: '-0.01em' }}>Pegasus</span>
+        </div>
+
         <Outlet />
       </main>
     </div>

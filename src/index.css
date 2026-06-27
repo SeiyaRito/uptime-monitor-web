@@ -1,0 +1,31 @@
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { margin: 0; padding: 0; height: 100%; }
+body {
+  background: #0a0a0a;
+  color: #e8e8e8;
+  font-family: 'Geist', 'Geist Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+::selection { background: rgba(29,158,117,0.28); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+.pw-scroll::-webkit-scrollbar { width: 11px; height: 11px; }
+.pw-scroll::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 10px; border: 3px solid #0a0a0a; }
+.pw-scroll::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
+.pw-scroll::-webkit-scrollbar-track { background: transparent; }
+
+.pw-field { outline: none; transition: border-color .12s, background .12s; }
+.pw-field::placeholder { color: #3d3d3d; }
+.pw-field:focus { border-color: #2f6f57 !important; background: #161616 !important; }
+
+.pw-search { outline: none; transition: border-color .12s, background .12s; }
+.pw-search::placeholder { color: #3d3d3d; }
+.pw-search:focus { border-color: #2f6f57 !important; background: #161616 !important; }
+
+.pw-day:hover { outline: 1px solid rgba(255,255,255,0.35); outline-offset: 0; }
+
+@keyframes pwpulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pwfade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pwrise { from { opacity: 0; transform: translateY(10px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
